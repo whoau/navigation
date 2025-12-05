@@ -46,7 +46,13 @@ const Storage = {
     searchEngine: 'google',
     lastWallpaperChange: 0,
     currentWallpaper: '',
-    wallpaperHistory: []
+    wallpaperHistory: [],
+    movieCache: null,
+    bookCache: null,
+    musicCache: null,
+    movieCacheTime: 0,
+    bookCacheTime: 0,
+    musicCacheTime: 0
   },
 
   async get(key) {
@@ -83,6 +89,12 @@ const Storage = {
     const lastWallpaperChange = await this.get('lastWallpaperChange');
     const currentWallpaper = await this.get('currentWallpaper');
     const wallpaperHistory = await this.get('wallpaperHistory');
+    const movieCache = await this.get('movieCache');
+    const bookCache = await this.get('bookCache');
+    const musicCache = await this.get('musicCache');
+    const movieCacheTime = await this.get('movieCacheTime');
+    const bookCacheTime = await this.get('bookCacheTime');
+    const musicCacheTime = await this.get('musicCacheTime');
 
     return {
       settings: { ...this.defaults.settings, ...settings },
@@ -93,7 +105,13 @@ const Storage = {
       searchEngine: searchEngine || 'google',
       lastWallpaperChange: lastWallpaperChange || 0,
       currentWallpaper: currentWallpaper || '',
-      wallpaperHistory: wallpaperHistory || []
+      wallpaperHistory: wallpaperHistory || [],
+      movieCache: movieCache || null,
+      bookCache: bookCache || null,
+      musicCache: musicCache || null,
+      movieCacheTime: movieCacheTime || 0,
+      bookCacheTime: bookCacheTime || 0,
+      musicCacheTime: musicCacheTime || 0
     };
   },
 
