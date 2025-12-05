@@ -184,14 +184,18 @@ const API = {
   // 书籍推荐 - 完全自动化
   async getBookRecommendation() {
     const backupBooks = [
-      { title: '百年孤独', author: '马尔克斯', category: '魔幻现实', rating: 9.4, cover: 'https://img2.doubanio.com/view/subject/l/public/s6384944.jpg', description: '马孔多小镇的百年兴衰，布恩迪亚家族七代人的传奇故事。' },
       { title: '活着', author: '余华', category: '现代文学', rating: 9.4, cover: 'https://img2.doubanio.com/view/subject/l/public/s29053580.jpg', description: '福贵悲惨的人生遭遇，对生命意义的深刻探索。' },
       { title: '三体', author: '刘慈欣', category: '科幻小说', rating: 9.3, cover: 'https://img2.doubanio.com/view/subject/l/public/s2768378.jpg', description: '地球文明与三体文明的生死较量，宇宙级别的黑暗森林法则。' },
-      { title: '小王子', author: '圣-埃克苏佩里', category: '童话寓言', rating: 9.1, cover: 'https://img2.doubanio.com/view/subject/l/public/s1237549.jpg', description: '小王子从B612星球出发，开启了一段奇妙的星际旅程。' },
-      { title: '1984', author: '乔治·奥威尔', category: '反乌托邦', rating: 9.4, cover: 'https://img1.doubanio.com/view/subject/l/public/s4371408.jpg', description: '深刻揭示极权主义的本质，对未来社会的警示寓言。' },
-      { title: '人类简史', author: '尤瓦尔·赫拉利', category: '历史人文', rating: 9.1, cover: 'https://img1.doubanio.com/view/subject/l/public/s27814883.jpg', description: '从认知革命到科学革命，讲述人类如何登上食物链顶端。' },
-      { title: '追风筝的人', author: '卡勒德·胡赛尼', category: '当代文学', rating: 8.9, cover: 'https://img3.doubanio.com/view/subject/l/public/s1727290.jpg', description: '关于友谊、背叛与救赎的感人故事。' },
-      { title: '围城', author: '钱钟书', category: '现代文学', rating: 9.0, cover: 'https://img1.doubanio.com/view/subject/l/public/s1046265.jpg', description: '婚姻是座围城，城外的人想进去，城里的人想出来。' }
+      { title: '围城', author: '钱钟书', category: '现代文学', rating: 9.0, cover: 'https://img1.doubanio.com/view/subject/l/public/s1046265.jpg', description: '婚姻是座围城，城外的人想进去，城里的人想出来。' },
+      { title: '解忧杂货店', author: '东野圭吾', category: '治愈小说', rating: 8.7, cover: 'https://img1.doubanio.com/view/subject/l/public/s27255146.jpg', description: '一家神秘的杂货店，为人们排忧解难的故事。' },
+      { title: '挪威的森林', author: '村上春树', category: '爱情文学', rating: 8.5, cover: 'https://img3.doubanio.com/view/subject/l/public/s1080124.jpg', description: '青年渡边彻的爱情与成长之旅。' },
+      { title: '平凡的世界', author: '路遥', category: '现实主义', rating: 9.3, cover: 'https://img1.doubanio.com/view/subject/l/public/s2589564.jpg', description: '从1975年到1985年，中国农村的十年变迁。' },
+      { title: '百年孤独', author: '马尔克斯', category: '魔幻现实', rating: 9.4, cover: 'https://img2.doubanio.com/view/subject/l/public/s6384944.jpg', description: '马孔多小镇的百年兴衰，布恩迪亚家族七代人的传奇故事。' },
+      { title: '悲伤逆流成河', author: '郭敬明', category: '青春文学', rating: 7.8, cover: 'https://img3.doubanio.com/view/subject/l/public/s2262265.jpg', description: '青春期的伤痛与救赎，一段生命中无法忘却的记忆。' },
+      { title: '人生', author: '路遥', category: '长篇小说', rating: 9.0, cover: 'https://img1.doubanio.com/view/subject/l/public/s3055954.jpg', description: '高加林的人生奋斗与成长之路。' },
+      { title: '月亮与六便士', author: '毛姆', category: '文学经典', rating: 9.2, cover: 'https://img2.doubanio.com/view/subject/l/public/s29589816.jpg', description: '一个普通男人的艺术梦想与人生抉择。' },
+      { title: '呐喊', author: '鲁迅', category: '现代文学', rating: 9.1, cover: 'https://img1.doubanio.com/view/subject/l/public/s1004849.jpg', description: '中国现代文学的开山之作，对旧社会的深刻批判。' },
+      { title: '沉默的羔羊', author: '托马斯·哈里斯', category: '悬疑犯罪', rating: 8.9, cover: 'https://img3.doubanio.com/view/subject/l/public/s1079841.jpg', description: '心理悬疑大师之作，寻找连环杀手的惊险旅程。' }
     ];
 
     const subjects = [
@@ -255,17 +259,21 @@ const API = {
   // 音乐推荐 - 完全自动化
   async getMusicRecommendation() {
     const backupMusic = [
-      { title: 'Bohemian Rhapsody', artist: 'Queen', album: 'A Night at the Opera', year: '1975', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4d/Queen_A_Night_At_The_Opera.png', tags: ['摇滚', '经典'] },
-      { title: 'Hotel California', artist: 'Eagles', album: 'Hotel California', year: '1977', cover: 'https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg', tags: ['摇滚', '民谣'] },
       { title: '晴天', artist: '周杰伦', album: '叶惠美', year: '2003', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg', tags: ['流行', '华语'] },
-      { title: 'Imagine', artist: 'John Lennon', album: 'Imagine', year: '1971', cover: 'https://upload.wikimedia.org/wikipedia/en/1/1d/John_Lennon_-_Imagine_John_Lennon.jpg', tags: ['摇滚', '和平'] },
       { title: '海阔天空', artist: 'Beyond', album: '乐与怒', year: '1993', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000003aQYLo2x8izP_1.jpg', tags: ['摇滚', '粤语'] },
-      { title: 'Billie Jean', artist: 'Michael Jackson', album: 'Thriller', year: '1982', cover: 'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png', tags: ['流行', '舞曲'] },
       { title: '夜曲', artist: '周杰伦', album: '十一月的萧邦', year: '2005', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg', tags: ['流行', '钢琴'] },
-      { title: 'Yesterday', artist: 'The Beatles', album: 'Help!', year: '1965', cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Help%21_%28The_Beatles_album_-_cover_art%29.jpg', tags: ['摇滚', '民谣'] }
+      { title: '独白', artist: '五月天', album: '怪兽', year: '2005', cover: 'https://y.qq.com/music/photo_new/T002R300x300M0000009wHk90yqfQH_1.jpg', tags: ['摇滚', '华语'] },
+      { title: '光年之外', artist: '邓紫棋', album: '光年之外', year: '2018', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000003JkXhO1sUDQ_1.jpg', tags: ['流行', '华语'] },
+      { title: '下山', artist: '花粥', album: '浪人琵琶', year: '2017', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000002SOpRc0bqNf_1.jpg', tags: ['民谣', '华语'] },
+      { title: '稻香', artist: '周杰伦', album: '依然范特西', year: '2006', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000000JKYHt1KHPAQ_1.jpg', tags: ['流行', '华语'] },
+      { title: '青花瓷', artist: '周杰伦', album: '说好不哭', year: '2008', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000001U6Jcf0U2qGW_1.jpg', tags: ['民族', '华语'] },
+      { title: '光辉岁月', artist: 'Beyond', album: '光辉岁月', year: '1989', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000002BjZrR4KlqL_1.jpg', tags: ['摇滚', '粤语'] },
+      { title: '怎么舍得你一个人难受', artist: '李琦', album: '怎么舍得你一个人难受', year: '2014', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000003xJNfF3D8Fy_1.jpg', tags: ['流行', '华语'] },
+      { title: '一百万个可能', artist: 'christine welch', album: '天生一对', year: '2019', cover: 'https://y.qq.com/music/photo_new/T002R300x300M00000298kw02vVYB_1.jpg', tags: ['流行', '华语'] },
+      { title: '如果没有你', artist: '莫文蔚', album: '如果没有你', year: '2007', cover: 'https://y.qq.com/music/photo_new/T002R300x300M0000006emT403bwNj_1.jpg', tags: ['流行', '华语'] }
     ];
 
-    const keywords = ['mandarin', 'indie', 'jazz', 'classical', 'lofi', 'kpop', 'cantonese', 'instrumental', 'acoustic'];
+    const keywords = ['mandarin', 'chinese', 'cantonese', 'jacky cheung', 'jay chou', 'pop chinese', 'lofi', 'jazz', 'acoustic'];
     const pool = [...keywords].sort(() => Math.random() - 0.5);
 
     for (const keyword of pool) {
