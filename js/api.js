@@ -1,0 +1,236 @@
+// API 统一管理模块
+const API = {
+  // 图库 API
+  imageAPIs: {
+    unsplash: {
+      name: 'Unsplash',
+      getUrl: (category = 'nature') => `https://source.unsplash.com/1920x1080/?${category}&t=${Date.now()}`
+    },
+    picsum: {
+      name: 'Lorem Picsum',
+      getUrl: () => `https://picsum.photos/1920/1080?t=${Date.now()}`
+    },
+    bing: {
+      name: '必应每日',
+      getUrl: async () => {
+        try {
+          const res = await fetch('https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=zh-CN');
+          const data = await res.json();
+          return data.url;
+        } catch {
+          return 'https://picsum.photos/1920/1080';
+        }
+      }
+    }
+  },
+
+  // 渐变预设
+  gradientPresets: [
+    { name: '极光紫', colors: ['#667eea', '#764ba2'] },
+    { name: '海洋蓝', colors: ['#2193b0', '#6dd5ed'] },
+    { name: '日落橙', colors: ['#ee0979', '#ff6a00'] },
+    { name: '森林绿', colors: ['#134e5e', '#71b280'] },
+    { name: '薰衣草', colors: ['#a18cd1', '#fbc2eb'] },
+    { name: '烈焰红', colors: ['#f12711', '#f5af19'] },
+    { name: '深海蓝', colors: ['#0f0c29', '#302b63', '#24243e'] },
+    { name: '蜜桃粉', colors: ['#ffecd2', '#fcb69f'] },
+    { name: '薄荷绿', colors: ['#00b09b', '#96c93d'] },
+    { name: '暗夜黑', colors: ['#232526', '#414345'] },
+    { name: '樱花粉', colors: ['#ff9a9e', '#fecfef'] },
+    { name: '天空蓝', colors: ['#56ccf2', '#2f80ed'] },
+    { name: '葡萄紫', colors: ['#8e2de2', '#4a00e0'] },
+    { name: '柠檬黄', colors: ['#f7971e', '#ffd200'] },
+    { name: '极地冰', colors: ['#e6dada', '#274046'] },
+    { name: '珊瑚橙', colors: ['#ff9966', '#ff5e62'] },
+    { name: '星空', colors: ['#0f2027', '#203a43', '#2c5364'] },
+    { name: '彩虹', colors: ['#f093fb', '#f5576c'] },
+    { name: '翡翠绿', colors: ['#11998e', '#38ef7d'] },
+    { name: '玫瑰金', colors: ['#f4c4f3', '#fc67fa'] },
+    { name: '冰川', colors: ['#c9d6ff', '#e2e2e2'] },
+    { name: '热带', colors: ['#00f260', '#0575e6'] },
+    { name: '秋叶', colors: ['#d38312', '#a83279'] },
+    { name: '午夜', colors: ['#0f0c29', '#302b63'] }
+  ],
+
+  // 获取位置
+  async getLocation() {
+    const apis = [
+      { url: 'https://ipapi.co/json/', parse: d => ({ city: d.city || '未知', lat: parseFloat(d.latitude), lon: parseFloat(d.longitude) }) },
+      { url: 'http://ip-api.com/json/', parse: d => ({ city: d.city || '未知', lat: parseFloat(d.lat), lon: parseFloat(d.lon) }) }
+    ];
+
+    for (const api of apis) {
+      try {
+        const res = await fetch(api.url, { signal: AbortSignal.timeout(5000) });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const loc = api.parse(data);
+        if (loc.lat && loc.lon) return loc;
+      } catch { continue; }
+    }
+    return { city: '北京', lat: 39.9, lon: 116.4 };
+  },
+
+  // 获取天气
+  async getWeather(lat, lon) {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=3`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      const data = await res.json();
+
+      if (!data.current) return null;
+
+      return {
+        temp: Math.round(data.current.temperature_2m),
+        humidity: data.current.relative_humidity_2m,
+        windSpeed: Math.round(data.current.wind_speed_10m),
+        condition: this.getWeatherCondition(data.current.weather_code),
+        icon: this.getWeatherIcon(data.current.weather_code),
+        forecast: data.daily?.time.slice(0, 3).map((date, i) => ({
+          date: this.formatDate(date),
+          maxTemp: Math.round(data.daily.temperature_2m_max[i]),
+          minTemp: Math.round(data.daily.temperature_2m_min[i]),
+          icon: this.getWeatherIcon(data.daily.weather_code[i])
+        })) || []
+      };
+    } catch { return null; }
+  },
+
+  formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const today = new Date();
+    if (d.toDateString() === today.toDateString()) return '今天';
+    const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+    if (d.toDateString() === tomorrow.toDateString()) return '明天';
+    return ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
+  },
+
+  getWeatherCondition(code) {
+    const map = { 0:'晴', 1:'晴', 2:'多云', 3:'阴', 45:'雾', 51:'小雨', 61:'雨', 71:'雪', 80:'阵雨', 95:'雷暴' };
+    return map[code] || '未知';
+  },
+
+  getWeatherIcon(code) {
+    if (code <= 1) return 'fa-sun';
+    if (code === 2) return 'fa-cloud-sun';
+    if (code === 3) return 'fa-cloud';
+    if (code >= 45 && code <= 48) return 'fa-smog';
+    if (code >= 51 && code <= 67) return 'fa-cloud-rain';
+    if (code >= 71 && code <= 77) return 'fa-snowflake';
+    if (code >= 80 && code <= 82) return 'fa-cloud-showers-heavy';
+    if (code >= 95) return 'fa-bolt';
+    return 'fa-cloud';
+  },
+
+  // 电影推荐 - 使用随机推荐API
+  async getMovieRecommendation() {
+    const backupMovies = [
+      { title: '肖申克的救赎', originalTitle: 'The Shawshank Redemption', year: '1994', rating: 9.7, genre: '剧情 / 犯罪', director: '弗兰克·德拉邦特', poster: 'https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg', quote: '有些鸟儿是注定不会被关在笼里的。' },
+      { title: '教父', originalTitle: 'The Godfather', year: '1972', rating: 9.2, genre: '剧情 / 犯罪', director: '弗朗西斯·科波拉', poster: 'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg', quote: '我会给他一个无法拒绝的条件。' },
+      { title: '盗梦空间', originalTitle: 'Inception', year: '2010', rating: 9.4, genre: '科幻 / 悬疑', director: '克里斯托弗·诺兰', poster: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg', quote: '你在等一列火车，它会带你去远方。' },
+      { title: '星际穿越', originalTitle: 'Interstellar', year: '2014', rating: 9.4, genre: '科幻 / 冒险', director: '克里斯托弗·诺兰', poster: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg', quote: '爱是唯一可以超越时空的力量。' },
+      { title: '阿甘正传', originalTitle: 'Forrest Gump', year: '1994', rating: 9.5, genre: '剧情 / 爱情', director: '罗伯特·泽米吉斯', poster: 'https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg', quote: '生活就像一盒巧克力，你永远不知道会得到什么。' },
+      { title: '千与千寻', originalTitle: 'Spirited Away', year: '2001', rating: 9.4, genre: '动画 / 奇幻', director: '宫崎骏', poster: 'https://m.media-amazon.com/images/M/MV5BMjlmZmI5MDctNDE2YS00YWE0LWE5ZWItZDBhYWQ0NTcxNWRhXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg', quote: '不管前方的路有多苦，只要方向正确。' },
+      { title: '泰坦尼克号', originalTitle: 'Titanic', year: '1997', rating: 9.4, genre: '爱情 / 灾难', director: '詹姆斯·卡梅隆', poster: 'https://m.media-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg', quote: 'You jump, I jump.' },
+      { title: '楚门的世界', originalTitle: 'The Truman Show', year: '1998', rating: 9.4, genre: '剧情 / 科幻', director: '彼得·威尔', poster: 'https://m.media-amazon.com/images/M/MV5BMDIzODcyY2EtMmY2MC00ZWVlLTgwMzAtMjQwOWUyNmJjNTYyXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_SX300.jpg', quote: '假如再也碰不见你，祝你早安午安晚安。' },
+      { title: '机器人总动员', originalTitle: 'WALL-E', year: '2008', rating: 9.3, genre: '动画 / 科幻', director: '安德鲁·斯坦顿', poster: 'https://m.media-amazon.com/images/M/MV5BMjExMTg5OTU0NF5BMl5BanBnXkFtZTcwMjMxMzMzMw@@._V1_SX300.jpg', quote: '最美好的爱情电影。' },
+      { title: '怦然心动', originalTitle: 'Flipped', year: '2010', rating: 9.1, genre: '喜剧 / 爱情', director: '罗伯·莱纳', poster: 'https://m.media-amazon.com/images/M/MV5BMTkxNDExNTczMF5BMl5BanBnXkFtZTcwNzE2NTc4Ng@@._V1_SX300.jpg', quote: '有些人浅薄，有些人金玉其外败絮其中。' }
+    ];
+
+    // 使用随机选择而不是按日期循环
+    return backupMovies[Math.floor(Math.random() * backupMovies.length)];
+  },
+
+  // 书籍推荐
+  async getBookRecommendation() {
+    const backupBooks = [
+      { title: '百年孤独', author: '马尔克斯', category: '魔幻现实', rating: 9.4, cover: 'https://img2.doubanio.com/view/subject/l/public/s6384944.jpg', description: '马孔多小镇的百年兴衰，布恩迪亚家族七代人的传奇故事。' },
+      { title: '活着', author: '余华', category: '现代文学', rating: 9.4, cover: 'https://img2.doubanio.com/view/subject/l/public/s29053580.jpg', description: '福贵悲惨的人生遭遇，对生命意义的深刻探索。' },
+      { title: '三体', author: '刘慈欣', category: '科幻小说', rating: 9.3, cover: 'https://img2.doubanio.com/view/subject/l/public/s2768378.jpg', description: '地球文明与三体文明的生死较量，宇宙级别的黑暗森林法则。' },
+      { title: '小王子', author: '圣-埃克苏佩里', category: '童话寓言', rating: 9.1, cover: 'https://img2.doubanio.com/view/subject/l/public/s1237549.jpg', description: '小王子从B612星球出发，开启了一段奇妙的星际旅程。' },
+      { title: '1984', author: '乔治·奥威尔', category: '反乌托邦', rating: 9.4, cover: 'https://img1.doubanio.com/view/subject/l/public/s4371408.jpg', description: '深刻揭示极权主义的本质，对未来社会的警示寓言。' },
+      { title: '人类简史', author: '尤瓦尔·赫拉利', category: '历史人文', rating: 9.1, cover: 'https://img1.doubanio.com/view/subject/l/public/s27814883.jpg', description: '从认知革命到科学革命，讲述人类如何登上食物链顶端。' },
+      { title: '追风筝的人', author: '卡勒德·胡赛尼', category: '当代文学', rating: 8.9, cover: 'https://img3.doubanio.com/view/subject/l/public/s1727290.jpg', description: '关于友谊、背叛与救赎的感人故事。' },
+      { title: '围城', author: '钱钟书', category: '现代文学', rating: 9.0, cover: 'https://img1.doubanio.com/view/subject/l/public/s1046265.jpg', description: '婚姻是座围城，城外的人想进去，城里的人想出来。' }
+    ];
+
+    // 使用随机选择
+    return backupBooks[Math.floor(Math.random() * backupBooks.length)];
+  },
+
+  // 音乐推荐
+  async getMusicRecommendation() {
+    const backupMusic = [
+      { title: 'Bohemian Rhapsody', artist: 'Queen', album: 'A Night at the Opera', year: '1975', cover: 'https://upload.wikimedia.org/wikipedia/en/4/4d/Queen_A_Night_At_The_Opera.png', tags: ['摇滚', '经典'] },
+      { title: 'Hotel California', artist: 'Eagles', album: 'Hotel California', year: '1977', cover: 'https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg', tags: ['摇滚', '民谣'] },
+      { title: '晴天', artist: '周杰伦', album: '叶惠美', year: '2003', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000000MkMni19ClKG_3.jpg', tags: ['流行', '华语'] },
+      { title: 'Imagine', artist: 'John Lennon', album: 'Imagine', year: '1971', cover: 'https://upload.wikimedia.org/wikipedia/en/1/1d/John_Lennon_-_Imagine_John_Lennon.jpg', tags: ['摇滚', '和平'] },
+      { title: '海阔天空', artist: 'Beyond', album: '乐与怒', year: '1993', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000003aQYLo2x8izP_1.jpg', tags: ['摇滚', '粤语'] },
+      { title: 'Billie Jean', artist: 'Michael Jackson', album: 'Thriller', year: '1982', cover: 'https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png', tags: ['流行', '舞曲'] },
+      { title: '夜曲', artist: '周杰伦', album: '十一月的萧邦', year: '2005', cover: 'https://y.qq.com/music/photo_new/T002R300x300M000002jLGWe16Tf1H_1.jpg', tags: ['流行', '钢琴'] },
+      { title: 'Yesterday', artist: 'The Beatles', album: 'Help!', year: '1965', cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Help%21_%28The_Beatles_album_-_cover_art%29.jpg', tags: ['摇滚', '民谣'] }
+    ];
+
+    // 使用随机选择
+    return backupMusic[Math.floor(Math.random() * backupMusic.length)];
+  },
+
+  // 网页游戏推荐
+  getGamesRecommendation() {
+    const games = [
+      { name: '2048', url: 'https://play2048.co/', icon: '🎮', description: '经典数字合成游戏', color: '#edc22e' },
+      { name: 'Wordle', url: 'https://www.nytimes.com/games/wordle/index.html', icon: '📝', description: '猜单词游戏', color: '#6aaa64' },
+      { name: 'Tetris', url: 'https://tetris.com/play-tetris', icon: '🧩', description: '俄罗斯方块', color: '#0094d4' },
+      { name: 'Pac-Man', url: 'https://www.google.com/logos/2010/pacman10-i.html', icon: '👾', description: '吃豆人经典', color: '#ffcc00' },
+      { name: 'Snake', url: 'https://www.google.com/fbx?fbx=snake_arcade', icon: '🐍', description: '贪吃蛇', color: '#4caf50' },
+      { name: 'Minesweeper', url: 'https://minesweeper.online/', icon: '💣', description: '扫雷', color: '#757575' }
+    ];
+    
+    return games;
+  },
+
+  // 热榜
+  async getHotTopics() {
+    const results = { zhihu: [], weibo: [], toutiao: [] };
+    const apis = [
+      { url: 'https://api.vvhan.com/api/hotlist/zhihuHot', type: 'zhihu' },
+      { url: 'https://api.vvhan.com/api/hotlist/wbHot', type: 'weibo' },
+      { url: 'https://api.vvhan.com/api/hotlist/toutiaoHot', type: 'toutiao' }
+    ];
+
+    await Promise.all(apis.map(async api => {
+      try {
+        const res = await fetch(api.url, { signal: AbortSignal.timeout(8000) });
+        const data = await res.json();
+        if (data.success && data.data) {
+          results[api.type] = data.data.slice(0, 10).map((item, i) => ({
+            title: item.title, url: item.url, hot: item.hot || '', index: i + 1
+          }));
+        }
+      } catch { results[api.type] = this.getBackupHot(api.type); }
+    }));
+
+    Object.keys(results).forEach(k => {
+      if (!results[k].length) results[k] = this.getBackupHot(k);
+    });
+
+    return results;
+  },
+
+  getBackupHot(type) {
+    const data = {
+      zhihu: [{ title: '如何看待近期科技发展？', url: 'https://www.zhihu.com', hot: '热', index: 1 }],
+      weibo: [{ title: '今日热门话题', url: 'https://s.weibo.com/top/summary', hot: '沸', index: 1 }],
+      toutiao: [{ title: '今日要闻', url: 'https://www.toutiao.com', hot: '推荐', index: 1 }]
+    };
+    return data[type] || [];
+  },
+
+  async getRandomWallpaper(source = 'unsplash', category = 'nature') {
+    const api = this.imageAPIs[source];
+    if (!api) return null;
+    try {
+      return typeof api.getUrl === 'function' ? await api.getUrl(category) : api.getUrl;
+    } catch { return `https://picsum.photos/1920/1080?t=${Date.now()}`; }
+  }
+};
