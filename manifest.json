@@ -13,9 +13,20 @@
   ],
   "host_permissions": [
     "https://*.unsplash.com/*",
+    "https://source.unsplash.com/*",
+    "https://picsum.photos/*",
+    "https://bing.biturl.top/*",
+    "https://api.open-meteo.com/*",
+    "https://api.sampleapis.com/*",
+    "https://www.omdbapi.com/*",
+    "https://openlibrary.org/*",
+    "https://covers.openlibrary.org/*",
+    "https://itunes.apple.com/*",
+    "https://api.vvhan.com/*",
     "https://api.openweathermap.org/*",
     "https://api.themoviedb.org/*",
-    "https://ipapi.co/*"
+    "https://ipapi.co/*",
+    "http://ip-api.com/*"
   ],
   "icons": {
     "16": "icons/icon16.png",

@@ -109,7 +109,10 @@ const Widgets = {
       if (!movie) throw new Error('获取电影失败');
 
       this.currentMovie = movie;
-      const genres = movie.genre.split(' / ').slice(0, 2);
+      const rawGenres = typeof movie.genre === 'string' ? movie.genre.split(/[,/]/) : [];
+      const genres = rawGenres.map(g => g.trim()).filter(Boolean).slice(0, 3);
+      const quotePreview = (movie.quote || '好电影总能治愈生活。').trim();
+      const displayQuote = quotePreview.length > 60 ? `${quotePreview.slice(0, 57)}...` : quotePreview;
 
       movieContent.innerHTML = `
         <div class="movie-card" id="movieCard">
@@ -133,10 +136,10 @@ const Widgets = {
               <span><i class="far fa-user"></i> ${movie.director}</span>
             </div>
             <div class="movie-genre">
-              ${genres.map(g => `<span class="movie-genre-tag">${g.trim()}</span>`).join('')}
+              ${genres.map(g => `<span class="movie-genre-tag">${g}</span>`).join('')}
             </div>
             <div class="movie-quote-box">
-              <span class="movie-quote-text">${movie.quote.length > 35 ? movie.quote.substring(0, 35) + '...' : movie.quote}</span>
+              <span class="movie-quote-text">${displayQuote}</span>
             </div>
           </div>
         </div>
@@ -169,6 +172,8 @@ const Widgets = {
     const movieDetail = document.getElementById('movieDetail');
     if (!movieModal || !movieDetail) return;
 
+    const detailPlot = (movie.fullPlot || movie.quote || '故事梗概待更新。').trim();
+
     movieDetail.innerHTML = `
       <div class="movie-detail-header" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(26,26,32,1)), url('${movie.poster}');"></div>
       <div class="movie-detail-info">
@@ -179,7 +184,7 @@ const Widgets = {
           <span><i class="fas fa-film"></i> ${movie.genre}</span>
           <span><i class="fas fa-user"></i> ${movie.director}</span>
         </div>
-        <div class="movie-detail-quote">"${movie.quote}"</div>
+        <div class="movie-detail-quote">"${detailPlot}"</div>
       </div>
     `;
 
@@ -201,6 +206,9 @@ const Widgets = {
     try {
       const book = await API.getBookRecommendation();
       if (!book) throw new Error('获取书籍失败');
+
+      const bookDescSource = (book.description || '这本书口碑极佳，值得细细品读。').trim();
+      const bookDesc = bookDescSource.length > 120 ? `${bookDescSource.slice(0, 117)}...` : bookDescSource;
 
       bookContent.innerHTML = `
         <div class="book-card">
@@ -228,7 +236,7 @@ const Widgets = {
             </div>
           </div>
           <div class="book-desc-box">
-            <span class="book-desc-text">${book.description}</span>
+            <span class="book-desc-text">${bookDesc}</span>
           </div>
         </div>
       `;
@@ -262,6 +270,8 @@ const Widgets = {
       const music = await API.getMusicRecommendation();
       if (!music) throw new Error('获取音乐失败');
 
+      const tags = Array.isArray(music.tags) && music.tags.length ? music.tags : ['精选', '随心听'];
+
       musicContent.innerHTML = `
         <div class="music-card">
           <div class="music-cover-section">
@@ -286,7 +296,7 @@ const Widgets = {
             <div class="music-artist">${music.artist}</div>
             <div class="music-album">《${music.album}》· ${music.year}</div>
             <div class="music-tags">
-              ${music.tags.map(tag => `<span class="music-tag">${tag}</span>`).join('')}
+              ${tags.map(tag => `<span class="music-tag">${tag}</span>`).join('')}
             </div>
           </div>
         </div>
