@@ -1,4 +1,6 @@
 // 存储管理模块
+const PROVERB_HISTORY_LIMIT = 60;
+
 const Storage = {
   defaults: {
     settings: {
@@ -46,7 +48,8 @@ const Storage = {
     currentWallpaper: '',
     wallpaperHistory: [],
     proverbCache: null,
-    proverbCacheDate: null
+    proverbCacheDate: null,
+    proverbHistory: []
   },
 
   async get(key) {
@@ -85,6 +88,7 @@ const Storage = {
     const wallpaperHistory = await this.get('wallpaperHistory');
     const proverbCache = await this.get('proverbCache');
     const proverbCacheDate = await this.get('proverbCacheDate');
+    const proverbHistory = await this.get('proverbHistory');
 
     return {
       settings: { ...this.defaults.settings, ...settings },
@@ -97,7 +101,73 @@ const Storage = {
       currentWallpaper: currentWallpaper || '',
       wallpaperHistory: wallpaperHistory || [],
       proverbCache: proverbCache || null,
-      proverbCacheDate: proverbCacheDate || null
+      proverbCacheDate: proverbCacheDate || null,
+      proverbHistory: proverbHistory || []
+    };
+  },
+
+  async getProverbHistory() {
+    const history = await this.get('proverbHistory');
+    return Array.isArray(history) ? history : [];
+  },
+
+  async recordProverb(proverb, meta = {}) {
+    if (!proverb || !proverb.text) return;
+
+    const history = await this.getProverbHistory();
+    const entry = {
+      text: proverb.text,
+      author: proverb.author || '',
+      source: proverb.source || '',
+      category: proverb.category || '',
+      fetchedAt: meta.fetchedAt || proverb.fetchedAt || new Date().toISOString(),
+      dateKey: meta.dateKey || proverb.dateKey || ''
+    };
+
+    const deduped = history.filter(item => !(item.text === entry.text && item.source === entry.source));
+    deduped.unshift(entry);
+
+    if (deduped.length > PROVERB_HISTORY_LIMIT) {
+      deduped.length = PROVERB_HISTORY_LIMIT;
+    }
+
+    await this.set('proverbHistory', deduped);
+  },
+
+  async exportData() {
+    const snapshot = await this.getAll();
+    let timezone = 'UTC';
+
+    try {
+      timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch (error) {
+      timezone = 'UTC';
+    }
+
+    return {
+      meta: {
+        schema: 'mytab-export-v1',
+        generatedAt: new Date().toISOString(),
+        timezone
+      },
+      data: {
+        settings: snapshot.settings,
+        shortcuts: snapshot.shortcuts,
+        bookmarks: snapshot.bookmarks,
+        todos: snapshot.todos,
+        notes: snapshot.notes,
+        searchEngine: snapshot.searchEngine,
+        wallpaper: {
+          current: snapshot.currentWallpaper,
+          history: snapshot.wallpaperHistory,
+          lastChangedAt: snapshot.lastWallpaperChange
+        },
+        proverb: {
+          today: snapshot.proverbCache,
+          lastUpdated: snapshot.proverbCacheDate,
+          history: snapshot.proverbHistory
+        }
+      }
     };
   },
 

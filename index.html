@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mytab</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌏</text></svg>">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/tabflow-32.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -101,6 +101,15 @@
 
       <!-- 每日名言小组件 -->
       <div class="proverb-simple" id="proverbWidget">
+        <div class="proverb-simple-headline">
+          <div class="proverb-title">
+            <i class="fas fa-quote-left"></i>
+            <span>每日谚语</span>
+          </div>
+          <button class="proverb-refresh-btn" id="refreshProverbBtn" title="刷新谚语" type="button">
+            <i class="fas fa-arrows-rotate"></i>
+          </button>
+        </div>
         <div class="proverb-simple-content" id="proverbContent">
           <div class="proverb-loading">
             <i class="fas fa-circle-notch fa-spin"></i>
@@ -387,6 +396,21 @@
                 <input type="checkbox" id="showNotes" checked>
                 <span class="slider"></span>
               </label>
+            </div>
+          </div>
+
+          <!-- 数据工具 -->
+          <div class="settings-section">
+            <h3><i class="fas fa-database"></i> 数据工具</h3>
+            <div class="setting-item setting-item-column">
+              <div class="setting-item-info">
+                <label>导出数据</label>
+                <p class="setting-hint">一键导出书签、快捷方式、待办、笔记、壁纸与谚语历史等用户数据。</p>
+              </div>
+              <button class="btn btn-primary settings-action-btn" id="exportDataBtn" type="button">
+                <i class="fas fa-file-export"></i>
+                <span>导出数据</span>
+              </button>
             </div>
           </div>
 

@@ -672,15 +672,16 @@ const switchSettings = [
     }
   }},
  { id: 'showWeather', key: 'showWeather', callback: () => Widgets.applyWidgetSettings(settings) },
+ { id: 'showProverb', key: 'showProverb', callback: () => Widgets.applyWidgetSettings(settings) },
  // { id: 'showMovie', key: 'showMovie', callback: () => Widgets.applyWidgetSettings(settings) },
  // { id: 'showBook', key: 'showBook', callback: () => Widgets.applyWidgetSettings(settings) },
  // { id: 'showMusic', key: 'showMusic', callback: () => Widgets.applyWidgetSettings(settings) },
-  { id: 'showHotTopics', key: 'showHotTopics', callback: () => Widgets.applyWidgetSettings(settings) },
-  { id: 'showTodo', key: 'showTodo', callback: () => Widgets.applyWidgetSettings(settings) },
-  { id: 'showBookmarks', key: 'showBookmarks', callback: () => Widgets.applyWidgetSettings(settings) },
-  { id: 'showNotes', key: 'showNotes', callback: () => Widgets.applyWidgetSettings(settings) },
-  { id: 'showGames', key: 'showGames', callback: () => Widgets.applyWidgetSettings(settings) }  // ✅ 新增这一行
-];
+ { id: 'showHotTopics', key: 'showHotTopics', callback: () => Widgets.applyWidgetSettings(settings) },
+ { id: 'showTodo', key: 'showTodo', callback: () => Widgets.applyWidgetSettings(settings) },
+ { id: 'showBookmarks', key: 'showBookmarks', callback: () => Widgets.applyWidgetSettings(settings) },
+ { id: 'showNotes', key: 'showNotes', callback: () => Widgets.applyWidgetSettings(settings) },
+ { id: 'showGames', key: 'showGames', callback: () => Widgets.applyWidgetSettings(settings) }  // ✅ 新增这一行
+ ];
 
     switchSettings.forEach(({ id, key, callback }) => {
       const el = document.getElementById(id);
@@ -694,20 +695,59 @@ const switchSettings = [
         if (callback) callback();
       });
     });
+
+    const exportBtn = document.getElementById('exportDataBtn');
+    if (exportBtn && !exportBtn.hasAttribute('data-bound')) {
+      exportBtn.setAttribute('data-bound', 'true');
+      exportBtn.addEventListener('click', async () => {
+        if (exportBtn.classList.contains('loading')) return;
+        exportBtn.classList.add('loading');
+        exportBtn.disabled = true;
+        try {
+          await this.exportUserData();
+        } finally {
+          exportBtn.classList.remove('loading');
+          exportBtn.disabled = false;
+        }
+      });
+    }
   },
 
   toggleBgSettings(type) {
     const gradientSettings = document.getElementById('gradientSettings');
     const imageLibrarySettings = document.getElementById('imageLibrarySettings');
     const customImageSettings = document.getElementById('customImageSettings');
-    
+
     if (gradientSettings) gradientSettings.style.display = type === 'gradient' ? 'block' : 'none';
     if (imageLibrarySettings) imageLibrarySettings.style.display = ['unsplash', 'picsum', 'bing'].includes(type) ? 'block' : 'none';
     if (customImageSettings) customImageSettings.style.display = type === 'custom' ? 'block' : 'none';
   },
 
+  async exportUserData() {
+    try {
+      const payload = await Storage.exportData();
+      if (!payload) throw new Error('empty export payload');
+
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const timestamp = (payload.meta?.generatedAt || new Date().toISOString()).replace(/[:.]/g, '-');
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `mytab-export-${timestamp}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('导出数据失败', error);
+      alert('导出失败，请稍后重试。');
+    }
+  },
+
   async saveAndApplySettings(settings) {
-    await Storage.set('settings', settings);
+
     this.data.settings = settings;
     this.applySettings(settings);
   },

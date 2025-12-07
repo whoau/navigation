@@ -117,6 +117,21 @@ const Widgets = {
 
     if (!proverbContent) return;
 
+    const refreshBtn = document.getElementById('refreshProverbBtn');
+    if (refreshBtn && !refreshBtn.hasAttribute('data-bound')) {
+      refreshBtn.setAttribute('data-bound', 'true');
+      refreshBtn.addEventListener('click', async () => {
+        refreshBtn.classList.add('loading');
+        refreshBtn.disabled = true;
+        try {
+          await this.loadProverb(true);
+        } finally {
+          refreshBtn.classList.remove('loading');
+          refreshBtn.disabled = false;
+        }
+      });
+    }
+
     await this.loadProverb();
   },
 

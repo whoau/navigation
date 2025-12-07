@@ -665,6 +665,59 @@ body {
   animation: fadeInUp 0.8s ease 0.25s backwards;
 }
 
+.proverb-simple-headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 4px;
+  color: var(--text-secondary);
+}
+
+.proverb-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.proverb-title i {
+  color: var(--primary-color);
+  font-size: 13px;
+}
+
+.proverb-title span {
+  font-size: 11px;
+}
+
+.proverb-refresh-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.proverb-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.proverb-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.proverb-refresh-btn.loading i {
+  animation: spin 1s linear infinite;
+}
+
 .proverb-simple-content {
   padding: 10px 20px;
 }
@@ -699,6 +752,10 @@ body {
 @media (max-width: 599px) {
   .proverb-simple {
     margin-bottom: 20px;
+  }
+  
+  .proverb-simple-headline {
+    padding: 0 12px 4px;
   }
   
   .proverb-text-only {
@@ -2132,6 +2189,41 @@ body {
 
 .setting-item select option {
   background: #1a1a22;
+}
+
+.setting-item.setting-item-column {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.setting-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.setting-hint {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  max-width: 260px;
+}
+
+.settings-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 8px 18px;
+}
+
+.settings-action-btn.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.settings-action-btn.loading i {
+  animation: spin 1s linear infinite;
 }
 
 /* 开关样式 */

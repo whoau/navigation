@@ -197,50 +197,7 @@ const API = {
     return null;
   },
 
-  // 汉语名言谚语
-  chineseProverbs: [
-    { text: '千里之行，始于足下。', author: '老子', source: '《道德经》', category: '励志' },
-    { text: '学而不思则罔，思而不学则殆。', author: '孔子', source: '《论语》', category: '学习' },
-    { text: '己所不欲，勿施于人。', author: '孔子', source: '《论语》', category: '修养' },
-    { text: '天行健，君子以自强不息。', author: '《周易》', source: '《周易·乾卦》', category: '励志' },
-    { text: '知之为知之，不知为不知，是知也。', author: '孔子', source: '《论语》', category: '学习' },
-    { text: '三人行，必有我师焉。', author: '孔子', source: '《论语》', category: '学习' },
-    { text: '欲穷千里目，更上一层楼。', author: '王之涣', source: '《登鹳雀楼》', category: '励志' },
-    { text: '读书破万卷，下笔如有神。', author: '杜甫', source: '《奉赠韦左丞丈二十二韵》', category: '学习' },
-    { text: '非淡泊无以明志，非宁静无以致远。', author: '诸葛亮', source: '《诫子书》', category: '修养' },
-    { text: '不以物喜，不以己悲。', author: '范仲淹', source: '《岳阳楼记》', category: '修养' },
-    { text: '业精于勤，荒于嬉；行成于思，毁于随。', author: '韩愈', source: '《进学解》', category: '学习' },
-    { text: '书山有路勤为径，学海无涯苦作舟。', author: '韩愈', source: '古训', category: '学习' },
-    { text: '少壮不努力，老大徒伤悲。', author: '《长歌行》', source: '汉乐府', category: '励志' },
-    { text: '宝剑锋从磨砺出，梅花香自苦寒来。', author: '古训', source: '古训', category: '励志' },
-    { text: '海纳百川，有容乃大。', author: '林则徐', source: '对联', category: '修养' },
-    { text: '路漫漫其修远兮，吾将上下而求索。', author: '屈原', source: '《离骚》', category: '励志' },
-    { text: '不积跬步，无以至千里；不积小流，无以成江海。', author: '荀子', source: '《劝学》', category: '励志' },
-    { text: '锲而舍之，朽木不折；锲而不舍，金石可镂。', author: '荀子', source: '《劝学》', category: '励志' },
-    { text: '穷则独善其身，达则兼济天下。', author: '孟子', source: '《孟子》', category: '修养' },
-    { text: '人无远虑，必有近忧。', author: '孔子', source: '《论语》', category: '智慧' },
-    { text: '工欲善其事，必先利其器。', author: '孔子', source: '《论语》', category: '智慧' },
-    { text: '温故而知新，可以为师矣。', author: '孔子', source: '《论语》', category: '学习' },
-    { text: '博学之，审问之，慎思之，明辨之，笃行之。', author: '《中庸》', source: '《礼记·中庸》', category: '学习' },
-    { text: '天下兴亡，匹夫有责。', author: '顾炎武', source: '《日知录》', category: '责任' },
-    { text: '先天下之忧而忧，后天下之乐而乐。', author: '范仲淹', source: '《岳阳楼记》', category: '责任' },
-    { text: '生于忧患，死于安乐。', author: '孟子', source: '《孟子》', category: '智慧' },
-    { text: '君子坦荡荡，小人长戚戚。', author: '孔子', source: '《论语》', category: '修养' },
-    { text: '知者不惑，仁者不忧，勇者不惧。', author: '孔子', source: '《论语》', category: '智慧' },
-    { text: '有志者事竟成。', author: '《后汉书》', source: '《后汉书》', category: '励志' },
-    { text: '纸上得来终觉浅，绝知此事要躬行。', author: '陆游', source: '《冬夜读书示子聿》', category: '实践' },
-    { text: '书到用时方恨少，事非经过不知难。', author: '陆游', source: '古训', category: '学习' },
-    { text: '古之立大事者，不惟有超世之才，亦必有坚韧不拔之志。', author: '苏轼', source: '《晁错论》', category: '励志' },
-    { text: '学无止境。', author: '荀子', source: '《劝学》', category: '学习' },
-    { text: '不经一番寒彻骨，怎得梅花扑鼻香。', author: '黄檗禅师', source: '《上堂开示颂》', category: '励志' },
-    { text: '长风破浪会有时，直挂云帆济沧海。', author: '李白', source: '《行路难》', category: '励志' },
-    { text: '问渠那得清如许，为有源头活水来。', author: '朱熹', source: '《观书有感》', category: '学习' },
-    { text: '横看成岭侧成峰，远近高低各不同。', author: '苏轼', source: '《题西林壁》', category: '智慧' },
-    { text: '会当凌绝顶，一览众山小。', author: '杜甫', source: '《望岳》', category: '励志' },
-    { text: '山重水复疑无路，柳暗花明又一村。', author: '陆游', source: '《游山西村》', category: '智慧' },
-    { text: '沉舟侧畔千帆过，病树前头万木春。', author: '刘禹锡', source: '《酬乐天扬州初逢席上见赠》', category: '智慧' }
-  ],
-
+  // 每日谚语
   async getDailyProverb(forceNew = false) {
     const todayKey = this.getDateKey();
     const cached = await Storage.get('proverbCache');
@@ -250,28 +207,50 @@ const API = {
       return cached;
     }
 
-    let proverb = await this.fetchDailyProverbFromAPI();
-    if (!proverb) {
-      proverb = this.getFallbackProverb(forceNew);
+    const fetched = await this.fetchDailyProverbFromAPI();
+    if (fetched) {
+      const normalized = this.normalizeProverb(fetched, todayKey);
+      await Storage.set('proverbCache', normalized);
+      await Storage.set('proverbCacheDate', todayKey);
+      await Storage.recordProverb(normalized, { dateKey: todayKey, fetchedAt: normalized.fetchedAt });
+      return normalized;
     }
 
-    await Storage.set('proverbCache', proverb);
-    await Storage.set('proverbCacheDate', todayKey);
+    if (cached) return cached;
 
-    return proverb;
+    const history = await Storage.get('proverbHistory');
+    if (history?.length) return history[0];
+
+    return null;
   },
 
   async fetchDailyProverbFromAPI() {
     const apis = [
       {
-        url: 'https://v1.hitokoto.cn/?c=d&encode=json',
+        url: 'https://v1.jinrishici.com/all.json',
+        noCache: true,
+        timeout: 6000,
+        parse: (data) => {
+          if (!data?.content) return null;
+          return {
+            text: data.content,
+            author: data.author || '',
+            source: data.origin || '今日诗词',
+            category: data.category || '诗词'
+          };
+        }
+      },
+      {
+        url: 'https://v1.hitokoto.cn/?c=d&c=i&c=k&c=l&encode=json&charset=utf-8',
+        noCache: true,
+        timeout: 5000,
         parse: (data) => {
           if (!data?.hitokoto) return null;
           return {
-            text: data.hitokoto.trim(),
-            author: data.from_who || '',
-            source: data.from || '',
-            category: '每日分享'
+            text: data.hitokoto,
+            author: data.from_who || data.creator || '',
+            source: data.from || '一言',
+            category: '每日一言'
           };
         }
       }
@@ -279,11 +258,16 @@ const API = {
 
     for (const api of apis) {
       try {
-        const res = await fetch(api.url, { signal: AbortSignal.timeout(5000) });
+        const endpoint = api.noCache
+          ? `${api.url}${api.url.includes('?') ? '&' : '?'}t=${Date.now()}`
+          : api.url;
+        const res = await fetch(endpoint, { signal: AbortSignal.timeout(api.timeout || 5000) });
         if (!res.ok) continue;
         const data = await res.json();
         const parsed = api.parse(data);
-        if (parsed?.text) return parsed;
+        if (parsed?.text) {
+          return parsed;
+        }
       } catch (error) {
         continue;
       }
@@ -292,26 +276,23 @@ const API = {
     return null;
   },
 
-  getFallbackProverb(forceNew = false) {
-    if (!this.chineseProverbs.length) return null;
-    if (forceNew) {
-      return this.chineseProverbs[Math.floor(Math.random() * this.chineseProverbs.length)];
-    }
-    const todayKey = this.getDateKey();
-    const hash = this.hashString(todayKey);
-    return this.chineseProverbs[hash % this.chineseProverbs.length];
+  normalizeProverb(proverb, dateKey) {
+    const sanitized = {
+      text: (proverb.text || '').trim(),
+      author: (proverb.author || '').trim(),
+      source: (proverb.source || '').trim(),
+      category: proverb.category || '每日谚语'
+    };
+
+    return {
+      ...sanitized,
+      fetchedAt: new Date().toISOString(),
+      dateKey
+    };
   },
 
   getDateKey(date = new Date()) {
     return date.toISOString().split('T')[0];
-  },
-
-  hashString(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash * 31 + str.charCodeAt(i)) & 0x7fffffff;
-    }
-    return hash;
   },
 
 
