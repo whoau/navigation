@@ -680,17 +680,19 @@ body {
 }
 
 .proverb-text {
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1.6;
   font-weight: 300;
+  margin-bottom: 8px;
 }
 
 .proverb-meta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 13px;
   color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .proverb-meta .proverb-author,
@@ -698,6 +700,12 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  font-style: italic;
+}
+
+.proverb-meta .proverb-source {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .proverb-category {
