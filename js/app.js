@@ -17,6 +17,7 @@ const App = {
     // 初始化小组件
     const settings = this.data.settings;
     if (settings.showWeather !== false) Widgets.initWeather();
+    if (settings.showProverb !== false) Widgets.initProverb();
     //if (settings.showMovie !== false) Widgets.initMovie();
    // if (settings.showBook !== false) Widgets.initBook();
     //if (settings.showMusic !== false) Widgets.initMusic();

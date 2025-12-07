@@ -90,6 +90,23 @@
         </div>
       </div>
 
+      <!-- 每日名言小组件 -->
+      <div class="widget proverb-widget hero-widget" id="proverbWidget">
+        <div class="widget-header">
+          <i class="fas fa-quote-left"></i>
+          <span>每日名言</span>
+          <button class="widget-header-btn" id="refreshProverb" title="换一条">
+            <i class="fas fa-redo"></i>
+          </button>
+        </div>
+        <div class="widget-content" id="proverbContent">
+          <div class="proverb-loading">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>加载中...</span>
+          </div>
+        </div>
+      </div>
+
       <!-- 快捷方式网格 -->
       <div class="shortcuts-container">
         <div class="shortcuts-grid" id="shortcutsGrid"></div>
@@ -101,23 +118,6 @@
 
       <!-- 小组件区域 -->
       <div class="widgets-container" id="widgetsContainer">
-        <!-- 每日名言小组件 -->
-        <div class="widget proverb-widget" id="proverbWidget">
-          <div class="widget-header">
-            <i class="fas fa-quote-left"></i>
-            <span>每日名言</span>
-            <button class="widget-header-btn" id="refreshProverb" title="换一条">
-              <i class="fas fa-redo"></i>
-            </button>
-          </div>
-          <div class="widget-content" id="proverbContent">
-            <div class="proverb-loading">
-              <i class="fas fa-circle-notch fa-spin"></i>
-              <span>加载中...</span>
-            </div>
-          </div>
-        </div>
-
         <!-- 天气小组件 -->
         <div class="widget weather-widget" id="weatherWidget">
           <div class="widget-header">
