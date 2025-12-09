@@ -734,7 +734,7 @@ body {
 }
 
 .proverb-text-only {
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.6;
   font-weight: 300;
   color: var(--text-color);
@@ -759,7 +759,7 @@ body {
   }
   
   .proverb-text-only {
-    font-size: 16px;
+    font-size: 18px;
   }
   
   .proverb-source-only {
