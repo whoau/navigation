@@ -197,7 +197,7 @@ const App = {
       let url;
       
       if (source === 'bing') {
-        url = await API.imageAPIs.bing.getUrl();
+        url = await API.imageAPIs.bing.getUrl(forceNew);
       } else if (source === 'unsplash') {
         url = `https://source.unsplash.com/1920x1080/?${settings.imageCategory}&t=${Date.now()}`;
       } else if (source === 'picsum') {
@@ -745,7 +745,7 @@ const switchSettings = [
   },
 
   async saveAndApplySettings(settings) {
-
+    await Storage.set('settings', settings);
     this.data.settings = settings;
     this.applySettings(settings);
   },

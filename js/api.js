@@ -14,9 +14,10 @@ const API = {
     },
     bing: {
       name: '必应每日',
-      getUrl: async () => {
+      getUrl: async (random = false) => {
         try {
-          const res = await fetch('https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=zh-CN');
+          const index = random ? Math.floor(Math.random() * 8) : 0;
+          const res = await fetch(`https://bing.biturl.top/?resolution=1920&format=json&index=${index}&mkt=zh-CN`);
           const data = await res.json();
           return data.url;
         } catch {
