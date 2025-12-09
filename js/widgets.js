@@ -397,13 +397,19 @@ const Widgets = {
 
   // ==================== 拖放功能 ====================
   initShortcutsDragDrop(grid, shortcuts, renderCallback) {
+    // Prevent duplicate initialization
+    if (grid.dataset.dragInitialized === 'true') {
+      return;
+    }
+    grid.dataset.dragInitialized = 'true';
+
     let draggedElement = null;
     let draggedIndex = null;
     let isDragging = false;
     let touchStartTime = 0;
     let touchItem = null;
     let overElement = null;
-
+    
     const getItemIndex = (element) => {
       if (!element) return -1;
       const index = parseInt(element.dataset.index);
@@ -416,7 +422,7 @@ const Widgets = {
       const draggedShortcut = shortcuts[fromIndex];
       shortcuts.splice(fromIndex, 1);
       
-      // Adjust insert index if dragging forward
+      // Adjust insert index if dragging forward to prevent off-by-one errors
       const insertIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
       shortcuts.splice(insertIndex, 0, draggedShortcut);
       
@@ -426,6 +432,9 @@ const Widgets = {
 
     // Mouse drag events
     grid.addEventListener('dragstart', (e) => {
+      // Don't allow dragging if clicking on delete button
+      if (e.target.closest('.shortcut-delete')) return;
+      
       const item = e.target.closest('.shortcut-item');
       if (!item) return;
       
@@ -498,6 +507,9 @@ const Widgets = {
 
     // Touch support for mobile devices
     grid.addEventListener('touchstart', (e) => {
+      // Don't allow dragging if clicking on delete button
+      if (e.target.closest('.shortcut-delete')) return;
+      
       const item = e.target.closest('.shortcut-item');
       if (!item) return;
       
@@ -547,11 +559,12 @@ const Widgets = {
     });
 
     // Prevent navigation when clicking on shortcuts during drag
+    // Use capturing phase to intercept before navigation
     grid.addEventListener('click', (e) => {
       const item = e.target.closest('.shortcut-item');
-      if (isDragging && item && item.classList.contains('dragging')) {
+      if (item && isDragging) {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
       }
     }, true);
   },
