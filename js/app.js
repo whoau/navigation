@@ -277,16 +277,14 @@ const App = {
 
   async shouldChangeWallpaper() {
     const settings = this.data.settings;
-    const lastChange = this.data.lastWallpaperChange || 0;
-    const now = Date.now();
 
     switch (settings.autoChangeWallpaper) {
       case 'newtab':
         return true;
       case 'hourly':
-        return now - lastChange > 3600000;
-      case 'daily':
-        return now - lastChange > 86400000;
+        // Hourly mode is handled by the timer in updateWallpaperTimers()
+        // This function should not change on newtab for hourly mode
+        return false;
       default:
         return !this.data.currentWallpaper;
     }
@@ -294,22 +292,35 @@ const App = {
 
   updateWallpaperTimers(mode) {
     // Clear all existing timers
-    if (this.wallpaperNewTabTimer) {
-      clearInterval(this.wallpaperNewTabTimer);
-      this.wallpaperNewTabTimer = null;
-    }
     if (this.wallpaperHourlyTimer) {
       clearInterval(this.wallpaperHourlyTimer);
       this.wallpaperHourlyTimer = null;
     }
-    if (this.wallpaperDailyTimer) {
-      clearInterval(this.wallpaperDailyTimer);
-      this.wallpaperDailyTimer = null;
-    }
 
-    // Only set timer for the selected mode (hourly and daily are handled via periodic check)
-    // The 'newtab' mode will be checked on each new tab open via shouldChangeWallpaper
     console.log(`Wallpaper auto-change mode set to: ${mode}`);
+
+    if (mode === 'hourly') {
+      console.log('Starting hourly wallpaper auto-change timer');
+      // Set a timer to change wallpaper every hour (3600000ms)
+      // Also trigger immediately if wallpaper is older than 1 hour
+      const checkAndChangeWallpaper = async () => {
+        const lastChange = this.data.lastWallpaperChange || 0;
+        const now = Date.now();
+        if (now - lastChange > 3600000) {
+          console.log('Hourly wallpaper change triggered');
+          await this.randomWallpaper();
+        }
+      };
+
+      // Check immediately on first load
+      checkAndChangeWallpaper();
+
+      // Then set interval for subsequent checks
+      this.wallpaperHourlyTimer = setInterval(checkAndChangeWallpaper, 3600000);
+    } else if (mode === 'newtab') {
+      console.log('Using newtab mode - wallpaper will change on new tab opens');
+      // newtab mode is handled via shouldChangeWallpaper() check in loadWallpaperFromAPI()
+    }
   },
 
   preloadImage(url) {

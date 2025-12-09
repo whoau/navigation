@@ -402,16 +402,41 @@ const Widgets = {
     let isDragging = false;
     let touchStartTime = 0;
     let touchItem = null;
+    let overElement = null;
+
+    const getItemIndex = (element) => {
+      if (!element) return -1;
+      const index = parseInt(element.dataset.index);
+      return isNaN(index) ? -1 : index;
+    };
+
+    const performReorder = async (fromIndex, toIndex) => {
+      if (fromIndex === toIndex || fromIndex === -1 || toIndex === -1) return;
+
+      const draggedShortcut = shortcuts[fromIndex];
+      shortcuts.splice(fromIndex, 1);
+      
+      // Adjust insert index if dragging forward
+      const insertIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+      shortcuts.splice(insertIndex, 0, draggedShortcut);
+      
+      await Storage.set('shortcuts', shortcuts);
+      renderCallback();
+    };
 
     // Mouse drag events
     grid.addEventListener('dragstart', (e) => {
       const item = e.target.closest('.shortcut-item');
       if (!item) return;
       
-      isDragging = true;
       draggedElement = item;
-      draggedIndex = parseInt(item.dataset.index);
+      draggedIndex = getItemIndex(item);
+      
+      if (draggedIndex === -1) return;
+      
+      isDragging = true;
       item.classList.add('dragging');
+      item.style.opacity = '0.5';
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/html', item.innerHTML);
     });
@@ -421,15 +446,27 @@ const Widgets = {
       e.dataTransfer.dropEffect = 'move';
       
       const item = e.target.closest('.shortcut-item');
-      if (!item || item === draggedElement) return;
+      if (!item || !isDragging) return;
       
-      item.classList.add('drag-over');
+      // Clear previous over state
+      if (overElement && overElement !== item) {
+        overElement.classList.remove('drag-over');
+      }
+      
+      // Only mark as over if not the dragged item
+      if (item !== draggedElement) {
+        item.classList.add('drag-over');
+        overElement = item;
+      }
     });
 
     grid.addEventListener('dragleave', (e) => {
       const item = e.target.closest('.shortcut-item');
-      if (item) {
+      if (item && item !== draggedElement) {
         item.classList.remove('drag-over');
+        if (overElement === item) {
+          overElement = null;
+        }
       }
     });
 
@@ -438,34 +475,25 @@ const Widgets = {
       e.stopPropagation();
       
       const dropTarget = e.target.closest('.shortcut-item');
-      if (!dropTarget || !draggedElement || dropTarget === draggedElement) {
+      if (!dropTarget || !isDragging || dropTarget === draggedElement) {
         this.clearDragState(grid);
         isDragging = false;
+        overElement = null;
         return;
       }
       
-      const dropIndex = parseInt(dropTarget.dataset.index);
-      
-      // Reorder shortcuts
-      if (draggedIndex !== dropIndex) {
-        const draggedShortcut = shortcuts[draggedIndex];
-        shortcuts.splice(draggedIndex, 1);
-        shortcuts.splice(dropIndex, 0, draggedShortcut);
-        
-        // Save the new order
-        Storage.set('shortcuts', shortcuts);
-        
-        // Re-render
-        renderCallback();
-      }
+      const dropIndex = getItemIndex(dropTarget);
+      performReorder(draggedIndex, dropIndex);
       
       this.clearDragState(grid);
       isDragging = false;
+      overElement = null;
     });
 
     grid.addEventListener('dragend', () => {
       this.clearDragState(grid);
       isDragging = false;
+      overElement = null;
     });
 
     // Touch support for mobile devices
@@ -478,42 +506,44 @@ const Widgets = {
     });
 
     grid.addEventListener('touchmove', (e) => {
-      const item = e.target.closest('.shortcut-item');
-      if (!touchItem || !item) return;
+      if (!touchItem) return;
       
       const elapsed = Date.now() - touchStartTime;
-      if (elapsed > 200) {
+      if (elapsed > 300) {  // Increased threshold to 300ms for better UX
+        e.preventDefault();
+        
         isDragging = true;
         draggedElement = touchItem;
-        draggedIndex = parseInt(touchItem.dataset.index);
+        draggedIndex = getItemIndex(touchItem);
         touchItem.classList.add('dragging');
+        touchItem.style.opacity = '0.5';
         
-        if (item !== touchItem) {
+        // Find element under touch position
+        const touch = e.touches[0];
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        const item = element?.closest('.shortcut-item');
+        
+        if (item && item !== touchItem) {
+          if (overElement && overElement !== item) {
+            overElement.classList.remove('drag-over');
+          }
           item.classList.add('drag-over');
+          overElement = item;
         }
       }
     });
 
     grid.addEventListener('touchend', (e) => {
-      const item = e.target.closest('.shortcut-item');
-      
-      if (isDragging && item && item !== draggedElement) {
-        const dropIndex = parseInt(item.dataset.index);
-        
-        if (draggedIndex !== dropIndex) {
-          const draggedShortcut = shortcuts[draggedIndex];
-          shortcuts.splice(draggedIndex, 1);
-          shortcuts.splice(dropIndex, 0, draggedShortcut);
-          
-          Storage.set('shortcuts', shortcuts);
-          renderCallback();
-        }
+      if (isDragging && overElement && overElement !== draggedElement) {
+        const dropIndex = getItemIndex(overElement);
+        performReorder(draggedIndex, dropIndex);
       }
       
       touchStartTime = 0;
       touchItem = null;
       this.clearDragState(grid);
       isDragging = false;
+      overElement = null;
     });
 
     // Prevent navigation when clicking on shortcuts during drag
@@ -522,7 +552,6 @@ const Widgets = {
       if (isDragging && item && item.classList.contains('dragging')) {
         e.preventDefault();
         e.stopPropagation();
-        isDragging = false;
       }
     }, true);
   },
@@ -530,6 +559,7 @@ const Widgets = {
   clearDragState(grid) {
     grid.querySelectorAll('.shortcut-item').forEach(item => {
       item.classList.remove('dragging', 'drag-over');
+      item.style.opacity = '1';
     });
   },
 
