@@ -447,23 +447,38 @@ body {
 }
 
 .add-shortcut-btn {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: transparent;
-  border: 1.5px dashed var(--border-color);
-  border-radius: 8px;
-  color: var(--text-secondary);
+  padding: 12px 6px;
+  background: var(--bg-card);
+  backdrop-filter: var(--blur);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 12px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  border: 1.5px dashed var(--border-color);
+  font-size: 10px;
+  width: 100%;
+  min-height: 75px;
 }
 
 .add-shortcut-btn:hover {
-  background: var(--bg-card);
+  background: var(--bg-card-hover);
+  transform: translateY(-3px);
   border-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.add-shortcut-btn i {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.add-shortcut-btn:hover i {
   color: var(--text-color);
 }
 

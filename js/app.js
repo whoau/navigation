@@ -216,7 +216,12 @@ const App = {
         bg.style.backgroundImage = `url(${settings.bgImageUrl})`;
       }
     } else {
-      await this.loadWallpaperFromAPI(settings.bgType);
+      // 对于图库类型，确保即使在"从不"模式下也显示当前壁纸
+      if (this.data.currentWallpaper && settings.autoChangeWallpaper === 'never') {
+        bg.style.backgroundImage = `url(${this.data.currentWallpaper})`;
+      } else {
+        await this.loadWallpaperFromAPI(settings.bgType);
+      }
     }
   },
 
@@ -285,7 +290,11 @@ const App = {
         // Hourly mode is handled by the timer in updateWallpaperTimers()
         // This function should not change on newtab for hourly mode
         return false;
+      case 'never':
+        // Never mode: never change wallpaper automatically, only show current
+        return false;
       default:
+        // Default behavior: fetch only if no current wallpaper (acts like 'never' after first fetch)
         return !this.data.currentWallpaper;
     }
   },
@@ -320,6 +329,9 @@ const App = {
     } else if (mode === 'newtab') {
       console.log('Using newtab mode - wallpaper will change on new tab opens');
       // newtab mode is handled via shouldChangeWallpaper() check in loadWallpaperFromAPI()
+    } else if (mode === 'never') {
+      console.log('Using never mode - wallpaper will not change automatically');
+      // never mode is handled by shouldChangeWallpaper() returning false
     }
   },
 

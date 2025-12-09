@@ -508,28 +508,28 @@ const Widgets = {
     grid.addEventListener('touchmove', (e) => {
       if (!touchItem) return;
       
-      const elapsed = Date.now() - touchStartTime;
-      if (elapsed > 300) {  // Increased threshold to 300ms for better UX
-        e.preventDefault();
-        
+      // Remove delay - start dragging immediately for fluid interaction
+      e.preventDefault();
+      
+      if (!isDragging) {
         isDragging = true;
         draggedElement = touchItem;
         draggedIndex = getItemIndex(touchItem);
         touchItem.classList.add('dragging');
         touchItem.style.opacity = '0.5';
-        
-        // Find element under touch position
-        const touch = e.touches[0];
-        const element = document.elementFromPoint(touch.clientX, touch.clientY);
-        const item = element?.closest('.shortcut-item');
-        
-        if (item && item !== touchItem) {
-          if (overElement && overElement !== item) {
-            overElement.classList.remove('drag-over');
-          }
-          item.classList.add('drag-over');
-          overElement = item;
+      }
+      
+      // Find element under touch position
+      const touch = e.touches[0];
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      const item = element?.closest('.shortcut-item');
+      
+      if (item && item !== touchItem) {
+        if (overElement && overElement !== item) {
+          overElement.classList.remove('drag-over');
         }
+        item.classList.add('drag-over');
+        overElement = item;
       }
     });
 
