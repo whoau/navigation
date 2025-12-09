@@ -1,7 +1,6 @@
 // 小组件模块
 const Widgets = {
   location: null,
-  hotTopicsData: null,
 
   // 通用图片重试机制
   retryImageLoad(imgElement, fallbackUrl) {
@@ -193,121 +192,6 @@ const Widgets = {
     `;
   },
 
-  // ==================== 热榜 ====================
-  async initHotTopics() {
-    const hotContent = document.getElementById('hotTopicsContent');
-    const refreshBtn = document.getElementById('refreshHotTopics');
-    if (!hotContent) return;
-
-    if (refreshBtn && !refreshBtn.hasAttribute('data-bound')) {
-      refreshBtn.setAttribute('data-bound', 'true');
-      refreshBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        refreshBtn.classList.add('loading');
-        this.loadHotTopics().finally(() => {
-          refreshBtn.classList.remove('loading');
-        });
-      });
-    }
-
-    this.bindHotTabEvents();
-    await this.loadHotTopics();
-  },
-
-  async loadHotTopics() {
-    const hotContent = document.getElementById('hotTopicsContent');
-
-    hotContent.innerHTML = `
-      <div class="hot-loading">
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <span>加载中...</span>
-      </div>
-    `;
-
-    try {
-      const topics = await API.getHotTopics();
-      this.hotTopicsData = topics;
-      this.renderHotTopics(topics);
-    } catch (error) {
-      hotContent.innerHTML = `
-        <div class="hot-loading">
-          <i class="fas fa-fire-alt" style="font-size:24px;opacity:0.3;"></i>
-          <span>加载失败</span>
-          <button onclick="Widgets.loadHotTopics()" class="retry-btn">
-            <i class="fas fa-redo"></i> 重试
-          </button>
-        </div>
-      `;
-    }
-  },
-
-  getHotTagClass(hot) {
-    if (!hot) return { class: '', text: '' };
-    const h = hot.toLowerCase();
-    if (h.includes('沸') || h.includes('爆')) return { class: 'hot-fire', text: hot };
-    if (h.includes('新')) return { class: 'hot-new', text: hot };
-    if (h.includes('荐') || h.includes('推荐')) return { class: 'hot-recommend', text: hot };
-    if (h.includes('热') || /\d/.test(hot)) return { class: 'hot-hot', text: hot };
-    return { class: 'hot-fire', text: hot };
-  },
-
-  renderHotTopics(topics) {
-    const hotContent = document.getElementById('hotTopicsContent');
-    const currentTab = document.querySelector('.hot-tab.active')?.dataset.tab || 'zhihu';
-    const data = topics[currentTab] || [];
-
-    if (data.length === 0) {
-      hotContent.innerHTML = `
-        <div class="hot-loading">
-          <i class="fas fa-inbox" style="font-size:24px;opacity:0.3;"></i>
-          <span>暂无数据</span>
-        </div>
-      `;
-      return;
-    }
-
-    hotContent.innerHTML = `
-      <ul class="hot-list">
-        ${data.map((item, index) => {
-          const tagInfo = this.getHotTagClass(item.hot);
-          return `
-            <li class="hot-item" data-url="${item.url}">
-              <span class="hot-index ${index < 3 ? 'top-' + (index + 1) : ''}">${index + 1}</span>
-              <div class="hot-content">
-                <span class="hot-title">${this.escapeHtml(item.title)}</span>
-                ${tagInfo.text ? `<span class="hot-tag ${tagInfo.class}">${tagInfo.text}</span>` : ''}
-              </div>
-            </li>
-          `;
-        }).join('')}
-      </ul>
-    `;
-
-    hotContent.querySelectorAll('.hot-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const url = item.dataset.url;
-        if (url) window.open(url, '_blank');
-      });
-    });
-  },
-
-  bindHotTabEvents() {
-    const tabs = document.querySelectorAll('.hot-tab');
-
-    tabs.forEach(tab => {
-      if (tab.hasAttribute('data-bound')) return;
-      tab.setAttribute('data-bound', 'true');
-
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-
-        if (this.hotTopicsData) {
-          this.renderHotTopics(this.hotTopicsData);
-        }
-      });
-    });
-  },
 
   // ==================== 待办事项 ====================
   async initTodo() {
@@ -522,7 +406,6 @@ const Widgets = {
     const widgets = {
       weatherWidget: settings.showWeather !== false,
       proverbWidget: settings.showProverb !== false,
-      hotTopicsWidget: settings.showHotTopics !== false,
       todoWidget: settings.showTodo !== false,
       bookmarksWidget: settings.showBookmarks !== false,
       notesWidget: settings.showNotes !== false,

@@ -471,7 +471,6 @@ body {
   }
   
   .weather-widget { grid-column: span 1; }
-  .hot-topics-widget { grid-column: span 1; grid-row: span 2; }
   .todo-widget { grid-column: span 1; }
   .bookmarks-widget { grid-column: span 2; }
   .notes-widget { grid-column: span 1; }
@@ -485,7 +484,6 @@ body {
   }
   
   .weather-widget { grid-column: span 1; }
-  .hot-topics-widget { grid-column: span 1; grid-row: span 2; }
   .todo-widget { grid-column: span 1; }
   .bookmarks-widget { grid-column: span 2; }
   .notes-widget { grid-column: span 1; }
@@ -499,7 +497,6 @@ body {
   }
   
   .weather-widget { grid-column: span 1; }
-  .hot-topics-widget { grid-column: span 1; }
   .todo-widget { grid-column: span 1; }
   .bookmarks-widget { grid-column: span 2; }
   .notes-widget { grid-column: span 1; }
@@ -513,7 +510,6 @@ body {
   }
   
   .weather-widget,
-  .hot-topics-widget,
   .todo-widget,
   .bookmarks-widget,
   .notes-widget,
@@ -1621,170 +1617,6 @@ body {
 }
 
 /* ==================== 热榜小组件 ==================== */
-.hot-topics-widget {
-  grid-column: span 1;
-  grid-row: span 2;
-}
-
-.hot-tabs {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 3px;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
-.hot-tab {
-  flex: 1;
-  padding: 6px 4px;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  color: var(--text-secondary);
-  font-size: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  font-weight: 500;
-}
-
-.hot-tab:hover {
-  color: var(--text-color);
-}
-
-.hot-tab.active {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--text-color);
-}
-
-.hot-tab i {
-  font-size: 10px;
-}
-
-.hot-tab .fa-zhihu { color: #0084ff; }
-.hot-tab .fa-weibo { color: #ff5722; }
-.hot-tab .fa-newspaper { color: #f44336; }
-
-.hot-list {
-  list-style: none;
-  flex: 1;
-  overflow-y: auto;
-  margin: 0 -3px;
-  padding: 0 3px;
-}
-
-.hot-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px 5px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 1px;
-}
-
-.hot-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.hot-index {
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 700;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary);
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.hot-index.top-1 {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-}
-
-.hot-index.top-2 {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  color: white;
-}
-
-.hot-index.top-3 {
-  background: linear-gradient(135deg, #eab308, #ca8a04);
-  color: white;
-}
-
-.hot-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.hot-title {
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-color);
-  display: block;
-  margin-bottom: 3px;
-}
-
-.hot-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: 9px;
-  padding: 2px 5px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-.hot-tag.hot-fire {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
-  color: #fca5a5;
-}
-
-.hot-tag.hot-fire::before { content: '🔥'; font-size: 8px; }
-
-.hot-tag.hot-new {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.2));
-  color: #86efac;
-}
-
-.hot-tag.hot-new::before { content: '✨'; font-size: 8px; }
-
-.hot-tag.hot-hot {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.2));
-  color: #fdba74;
-}
-
-.hot-tag.hot-hot::before { content: '💥'; font-size: 8px; }
-
-.hot-tag.hot-recommend {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.2));
-  color: #a5b4fc;
-}
-
-.hot-tag.hot-recommend::before { content: '👍'; font-size: 8px; }
-
-.hot-loading {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--text-secondary);
-  font-size: 11px;
-}
-
 /* ==================== 待办事项小组件 ==================== */
 .todo-widget {
   grid-column: span 1;
@@ -2536,14 +2368,12 @@ input[type="range"]::-webkit-slider-thumb {
   .widgets-container {
     grid-template-columns: repeat(3, 1fr);
   }
-  .hot-topics-widget { grid-row: span 2; }
 }
 
 @media (max-width: 1000px) {
   .widgets-container {
     grid-template-columns: repeat(2, 1fr);
   }
-  .hot-topics-widget { grid-row: span 1; }
 }
 
 @media (max-width: 768px) {
@@ -2552,7 +2382,6 @@ input[type="range"]::-webkit-slider-thumb {
   .greeting { font-size: 28px; }
   .shortcuts-grid { grid-template-columns: repeat(4, 1fr); }
   .widgets-container { grid-template-columns: 1fr; }
-  .hot-topics-widget { grid-row: span 1; }
   .settings-panel { width: 100%; right: -100%; }
   .gradient-presets { grid-template-columns: repeat(4, 1fr); }
   .wallpaper-controls { bottom: 14px; left: 14px; }

@@ -21,7 +21,6 @@ const App = {
     //if (settings.showMovie !== false) Widgets.initMovie();
    // if (settings.showBook !== false) Widgets.initBook();
     //if (settings.showMusic !== false) Widgets.initMusic();
-    if (settings.showHotTopics !== false) Widgets.initHotTopics();
     if (settings.showTodo !== false) Widgets.initTodo();
     if (settings.showBookmarks !== false) Widgets.initBookmarks();
     if (settings.showNotes !== false) Widgets.initNotes();
@@ -676,7 +675,6 @@ const switchSettings = [
  // { id: 'showMovie', key: 'showMovie', callback: () => Widgets.applyWidgetSettings(settings) },
  // { id: 'showBook', key: 'showBook', callback: () => Widgets.applyWidgetSettings(settings) },
  // { id: 'showMusic', key: 'showMusic', callback: () => Widgets.applyWidgetSettings(settings) },
- { id: 'showHotTopics', key: 'showHotTopics', callback: () => Widgets.applyWidgetSettings(settings) },
  { id: 'showTodo', key: 'showTodo', callback: () => Widgets.applyWidgetSettings(settings) },
  { id: 'showBookmarks', key: 'showBookmarks', callback: () => Widgets.applyWidgetSettings(settings) },
  { id: 'showNotes', key: 'showNotes', callback: () => Widgets.applyWidgetSettings(settings) },

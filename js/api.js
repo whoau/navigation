@@ -310,69 +310,6 @@ const API = {
     return games;
   },
 
-  // 热榜
-  async getHotTopics() {
-    const results = { zhihu: [], weibo: [], toutiao: [] };
-    const apis = [
-      { url: 'https://api.vvhan.com/api/hotlist/zhihuHot', type: 'zhihu' },
-      { url: 'https://api.vvhan.com/api/hotlist/wbHot', type: 'weibo' },
-      { url: 'https://api.vvhan.com/api/hotlist/toutiaoHot', type: 'toutiao' }
-    ];
-
-    const LIMIT = 5;
-
-    await Promise.all(apis.map(async api => {
-      try {
-        const res = await fetch(api.url, { signal: AbortSignal.timeout(8000) });
-        const data = await res.json();
-        if (data.success && data.data) {
-          results[api.type] = data.data.slice(0, LIMIT).map((item, i) => ({
-            title: item.title,
-            url: item.url,
-            hot: item.hot || '',
-            index: i + 1
-          }));
-        }
-      } catch {
-        results[api.type] = this.getBackupHot(api.type);
-      }
-    }));
-
-    Object.keys(results).forEach(k => {
-      if (!results[k].length) results[k] = this.getBackupHot(k);
-    });
-
-    return results;
-  },
-
-  getBackupHot(type) {
-    const zhihu = [
-      { title: 'OpenAI 最新模型带来哪些影响？', url: 'https://www.zhihu.com', hot: '热', index: 1 },
-      { title: '如何高效打造 AI 助手工作流？', url: 'https://www.zhihu.com', hot: '沸', index: 2 },
-      { title: '年轻人如何平衡副业与生活？', url: 'https://www.zhihu.com', hot: '热', index: 3 },
-      { title: '2024 年最值得入手的数码设备', url: 'https://www.zhihu.com', hot: '荐', index: 4 },
-      { title: '在一线城市怎样实现存钱自由？', url: 'https://www.zhihu.com', hot: '热', index: 5 }
-    ];
-
-    const weibo = [
-      { title: '世界杯预选赛今晚打响', url: 'https://s.weibo.com/top/summary', hot: '沸', index: 1 },
-      { title: '新剧开播口碑逆袭', url: 'https://s.weibo.com/top/summary', hot: '热', index: 2 },
-      { title: '航天员出差记 Vlog 更新', url: 'https://s.weibo.com/top/summary', hot: '荐', index: 3 },
-      { title: '又一城市宣布发放消费券', url: 'https://s.weibo.com/top/summary', hot: '新', index: 4 },
-      { title: '这届年轻人开始随手拍云', url: 'https://s.weibo.com/top/summary', hot: '热', index: 5 }
-    ];
-
-    const toutiao = [
-      { title: '国内首条无人驾驶公交线路开通', url: 'https://www.toutiao.com', hot: '热', index: 1 },
-      { title: '多地 GDP 半年报公布', url: 'https://www.toutiao.com', hot: '荐', index: 2 },
-      { title: '中国科研团队再获突破', url: 'https://www.toutiao.com', hot: '热', index: 3 },
-      { title: '数字人民币试点场景扩容', url: 'https://www.toutiao.com', hot: '新', index: 4 },
-      { title: '暑期档电影预售成绩抢眼', url: 'https://www.toutiao.com', hot: '热', index: 5 }
-    ];
-
-    const data = { zhihu, weibo, toutiao };
-    return data[type] || [];
-  },
 
   async getRandomWallpaper(source = 'unsplash', category = 'nature') {
     const api = this.imageAPIs[source];
