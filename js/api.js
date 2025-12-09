@@ -14,10 +14,27 @@ const API = {
     },
     bing: {
       name: '必应每日',
-      getUrl: async (random = false) => {
+      categories: {
+        'nature': { name: '自然风光', tags: ['landscape', 'nature', 'mountain', 'ocean', 'forest'] },
+        'city': { name: '城市建筑', tags: ['city', 'architecture', 'urban', 'skyscraper'] },
+        'animal': { name: '动物', tags: ['animal', 'wildlife', 'bird', 'cat', 'dog', 'nature'] },
+        'scenery': { name: '风景', tags: ['scenery', 'landscape', 'nature', 'mountain', 'lake', 'sunset'] },
+        'people': { name: '人物', tags: ['people', 'portrait', 'human', 'person'] },
+        'food': { name: '美食', tags: ['food', 'cuisine', 'meal', 'restaurant'] },
+        'technology': { name: '科技', tags: ['technology', 'tech', 'computer', 'digital', 'science'] },
+        'sports': { name: '体育', tags: ['sports', 'sport', 'fitness', 'exercise', 'stadium'] },
+        'art': { name: '艺术', tags: ['art', 'artistic', 'creative', 'painting', 'gallery'] },
+        'space': { name: '太空', tags: ['space', 'universe', 'galaxy', 'stars', 'astronomy'] },
+        'flower': { name: '花卉', tags: ['flower', 'flowers', 'plant', 'garden', 'nature'] },
+        'abstract': { name: '抽象', tags: ['abstract', 'pattern', 'texture', 'design'] }
+      },
+      getUrl: async (category = 'nature', random = false) => {
         try {
           const index = random ? Math.floor(Math.random() * 8) : 0;
-          const res = await fetch(`https://bing.biturl.top/?resolution=1920&format=json&index=${index}&mkt=zh-CN`);
+          const categoryConfig = API.imageAPIs.bing.categories[category];
+          const tags = categoryConfig ? categoryConfig.tags.join(',') : 'nature';
+          
+          const res = await fetch(`https://bing.biturl.top/?resolution=1920&format=json&index=${index}&mkt=zh-CN&t=${Date.now()}&q=${encodeURIComponent(tags)}`);
           const data = await res.json();
           return data.url;
         } catch {

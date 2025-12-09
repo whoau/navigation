@@ -12,6 +12,7 @@ const Storage = {
       gradientPresetIndex: 0,
       bgImageUrl: '',
       imageCategory: 'nature',
+      bingCategory: 'nature',
       autoChangeWallpaper: 'never',
       bgBlur: 0,
       bgDarkness: 30,
