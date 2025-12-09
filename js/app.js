@@ -6,6 +6,10 @@ const App = {
   async init() {
     console.log('App initializing...');
     await this.loadData();
+    
+    // 初始化壁纸池
+    await this.initWallpaperPool();
+    
     this.initClock();
     this.initGreeting();
     this.initShortcuts();
@@ -32,6 +36,16 @@ const App = {
     this.data = await Storage.getAll();
     this.applySettings(this.data.settings);
     Widgets.applyWidgetSettings(this.data.settings);
+  },
+
+  // 初始化壁纸池
+  async initWallpaperPool() {
+    try {
+      await API.wallpaperPool.updatePool();
+      console.log('壁纸池初始化完成');
+    } catch (error) {
+      console.warn('壁纸池初始化失败:', error);
+    }
   },
 
   // 壁纸控制初始化
@@ -197,13 +211,13 @@ const App = {
       let url;
       
       if (source === 'bing') {
-        url = await API.imageAPIs.bing.getUrl(forceNew);
+        url = await API.imageAPIs.bing.getUrl();
       } else if (source === 'unsplash') {
-        url = `https://source.unsplash.com/1920x1080/?${settings.imageCategory}&t=${Date.now()}`;
+        url = `https://source.unsplash.com/1920x1080/?t=${Date.now()}`;
       } else if (source === 'picsum') {
         url = `https://picsum.photos/1920/1080?random=${Date.now()}`;
       } else {
-        url = await API.getRandomWallpaper(source, settings.imageCategory);
+        url = await API.getRandomWallpaper(source);
       }
 
       await this.preloadImage(url);
@@ -586,17 +600,6 @@ const App = {
       angleSlider.addEventListener('input', async (e) => {
         settings.gradientAngle = parseInt(e.target.value);
         angleValue.textContent = `${settings.gradientAngle}°`;
-        await this.saveAndApplySettings(settings);
-      });
-    }
-
-    // 图片分类
-    const imageCategory = document.getElementById('imageCategory');
-    if (imageCategory) {
-      imageCategory.value = settings.imageCategory;
-      
-      imageCategory.addEventListener('change', async (e) => {
-        settings.imageCategory = e.target.value;
         await this.saveAndApplySettings(settings);
       });
     }
