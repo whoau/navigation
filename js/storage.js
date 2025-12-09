@@ -11,7 +11,7 @@ const Storage = {
       gradientAngle: 135,
       gradientPresetIndex: 0,
       bgImageUrl: '',
-      autoChangeWallpaper: 'never',
+      autoChangeWallpaper: 'newtab',
       bgBlur: 0,
       bgDarkness: 30,
       blurEffect: true,
